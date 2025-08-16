@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday!</title>
+<style>
+body {
+  text-align: center;
+  font-family: sans-serif;
+  margin-top: 50px;
+  background: #fff0e6;
+}
+
+.cake {
+  position: relative;
+  width: 220px;
+  margin: 50px auto;
+}
+
+/* Tulisan di atas kue */
+.cake-text {
+  position: absolute;
+  top: -30px;
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+  z-index: 5;
+}
+
+/* Layer bawah */
+.layer-bottom {
+  width: 220px;
+  height: 60px;
+  background: #8b4513;
+  border-radius: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Layer atas */
+.layer-top {
+  width: 160px;
+  height: 50px;
+  background: #8b4513;
+  border-radius: 10px;
+  margin: -20px auto 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Frosting / fla putih */
+.icing {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 20px;
+  background: #fff;
+  border-radius: 10px 10px 0 0;
+  z-index: 3;
+}
+
+/* Drip/fla jatuh */
+.drip {
+  position: absolute;
+  width: 10px;
+  height: 15px;
+  background: #fff;
+  border-radius: 50%;
+  z-index: 3;
+}
+.drip1 { top: 10px; left: 30px; }
+.drip2 { top: 15px; left: 70px; }
+.drip3 { top: 12px; left: 110px; }
+
+/* Lilin */
+.candle {
+  position: absolute;
+  top: -40px;
+  width: 10px;
+  height: 30px;
+  background: yellow;
+  border-radius: 3px;
+}
+
+.lit {
+  box-shadow: 0 0 10px orange;
+}
+
+/* Display jumlah lilin */
+.candle-count-display {
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+</style>
+</head>
+<body>
+
+<div class="candle-count-display">
+  Candles on the Cake: <span id="candleCount">3</span>
+</div>
+
+<div class="cake">
+  <div class="cake-text">祝你生日快乐</div>
+  <div class="layer layer-bottom"></div>
+  <div class="layer layer-top"></div>
+  <div class="icing"></div>
+  <div class="drip drip1"></div>
+  <div class="drip drip2"></div>
+  <div class="drip drip3"></div>
+
+  <!-- Lilin -->
+  <span class="candle lit" style="left:50px;"></span>
+  <span class="candle lit" style="left:100px;"></span>
+  <span class="candle lit" style="left:150px;"></span>
+</div>
+
+<script>
+// Pilih semua lilin
+const candles = document.querySelectorAll('.candle');
+
+// Akses mic
+navigator.mediaDevices.getUserMedia({ audio: true })
+.then(stream => {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const source = audioContext.createMediaStreamSource(stream);
+  const analyser = audioContext.createAnalyser();
+  source.connect(analyser);
+  analyser.fftSize = 512;
+  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+  function detectBlow() {
+    analyser.getByteFrequencyData(dataArray);
+    let sum = 0;
+    for(let i=0;i<dataArray.length;i++) sum+=dataArray[i];
+    if(sum > 10000) { // sesuaikan threshold kalau perlu
+      candles.forEach(c => c.classList.remove('lit')); // lilin padam
+    }
+    requestAnimationFrame(detectBlow);
+  }
+  detectBlow();
+})
+.catch(err => console.log('Microphone access denied:', err));
+</script>
+
+</body>
+</html>
