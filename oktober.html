@@ -14,13 +14,11 @@
 <body>
 <h1>🎂 Happy Birthday! 🎉</h1>
 <div class="cake" id="cake">
-  <!-- Tambahkan lilin di sini -->
   <span class="candle lit">🕯</span>
   <span class="candle lit">🕯</span>
   <span class="candle lit">🕯</span>
 </div>
 <p>Blow into your microphone to blow out the candles!</p>
-
 <script>
   const candles = document.querySelectorAll('.candle');
 
@@ -37,8 +35,8 @@
         analyser.getByteFrequencyData(dataArray);
         let sum = 0;
         for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-        if(sum > 10000) { // threshold tiupan, bisa diubah kalau terlalu sensitif
-          candles.forEach(c => c.classList.remove('lit')); // lilin padam
+        if(sum > 10000) {
+          candles.forEach(c => c.classList.remove('lit'));
         }
         requestAnimationFrame(detectBlow);
       }
