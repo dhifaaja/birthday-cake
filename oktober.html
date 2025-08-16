@@ -1,48 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday!</title>
-<style>
-  body { text-align: center; font-family: sans-serif; margin-top: 50px; }
-  .cake { font-size: 50px; }
-  .candle { display: inline-block; font-size: 40px; margin: 0 5px; }
-  .lit { color: orange; }
-</style>
-</head>
-<body>
-<h1>🎂 Happy Birthday! 🎉</h1>
-<div class="cake" id="cake">
-  <span class="candle lit">🕯</span>
-  <span class="candle lit">🕯</span>
-  <span class="candle lit">🕯</span>
-</div>
-<p>Blow into your microphone to blow out the candles!</p>
-<script>
-  const candles = document.querySelectorAll('.candle');
-
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(stream => {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const source = audioContext.createMediaStreamSource(stream);
-      const analyser = audioContext.createAnalyser();
-      source.connect(analyser);
-      analyser.fftSize = 512;
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-      function detectBlow() {
-        analyser.getByteFrequencyData(dataArray);
-        let sum = 0;
-        for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-        if(sum > 10000) {
-          candles.forEach(c => c.classList.remove('lit'));
-        }
-        requestAnimationFrame(detectBlow);
-      }
-      detectBlow();
-    })
-    .catch(err => console.log('Microphone access denied:', err));
-</script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Candle Blow</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+  </head>
+  <body>
+    <div class="candle-count-display">
+      Candles on the Cake: <span id="candleCount">0</span>
+    </div>
+    <div class="cake">
+      <div class="plate"></div>
+      <div class="layer layer-bottom"></div>
+      <div class="layer layer-middle"></div>
+      <div class="layer layer-top"></div>
+      <div class="icing"></div>
+      <div class="drip drip1"></div>
+      <div class="drip drip2"></div>
+      <div class="drip drip3"></div>
+    </div>
+    <script src="script.js"></script>
+  </body>
 </html>
